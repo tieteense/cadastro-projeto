@@ -14,59 +14,58 @@ password = 'D6hxXlsLVy9sBPxyi'
 connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
 
 # Function to register a new user
-def register_user(name, email, password):
+def register_user(nome, sobrenome, apelido):
     try:
         with pyodbc.connect(connection_string) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*) FROM Users WHERE Name = ?", (name,))
+            cursor.execute("SELECT COUNT(*) FROM Users WHERE Nome = ?", (nome,))
             if cursor.fetchone()[0] > 0:
-                raise Exception("User with this name already exists.")
-            cursor.execute("INSERT INTO Users (Name, Email, Password) VALUES (?, ?, ?)", (name, email, password))
+                raise Exception("Usuario já existe com este nome.")
+            cursor.execute("INSERT INTO Users (Nome, Sobrenome, Apelido) VALUES (?, ?, ?)", (nome, sobrenome, apelido))
             conn.commit()
-            print("User registered successfully!")
+            print("Usuario registrado com sucesso!")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Erro: {e}")
 
 # Function to get user input
 def get_user_input():
-    name = input("Enter your name: ")
-    email = input("Enter your email: ")
-    password = input("Enter your password: ")
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    password = hashed_password
-    return name, email, password
+    nome = input("Digite o seu nome: ")
+    sobrenome = input("Digite o seu sobrenome: ")
+    apelido = input("Digite o seu apelido: ")
+    return nome, sobrenome, apelido
 
 # Function to retrieve user data by name
-def retrieve_user_by_name(name):
+def retrieve_user_by_name(nome,sobrenome):
     try:
         with pyodbc.connect(connection_string) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT Name, Email, Password FROM Users WHERE Name = ?", (name,))
+            cursor.execute("SELECT Nome, Sobrenome, Apelido FROM Users WHERE Nome = ? AND Sobrenome = ?", (nome,sobrenome))
             row = cursor.fetchone()
             if row:
-                print(f"Name: {row[0]}, Email: {row[1]}, Password: {row[2]}")
+                print(f"Nome: {row[0]}, Sobrenome: {row[1]}, Apelido: {row[2]}")
             else:
-                print("User not found.")
+                print("Usuario não encontrado.")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Erro: {e}")
 
 # Example usage
 def menu():
-    print("1. Register a new user")
-    print("2. Retrieve an existing user")
-    print("3. Exit")
-    choice = input("Enter your choice: ")
+    print("1. Registrar um novo usuário")
+    print("2. Consultar um usuário existente")
+    print("3. Sair")
+    choice = input("Escolha uma opção: ")
     return choice
 
 if __name__ == "__main__":
     while True:
         choice = menu()
         if choice == '1':
-            name, email, password = get_user_input()
-            register_user(name, email, password)
+            nome, sobrenome, apelido = get_user_input()
+            register_user(nome, sobrenome, apelido)
         elif choice == '2':
-            retrieve_name = input("Enter the name of the user to retrieve: ")
-            retrieve_user_by_name(retrieve_name)
+            retrieve_nome = input("Digite o nome do usuario a ser consultado: ")
+            retrieve_sobrenome = input("Digite o sobrenome do usuario a ser consultado: ")
+            retrieve_user_by_name(retrieve_nome,retrieve_sobrenome)
         elif choice == '3':
             print("Exiting the program.")
             break

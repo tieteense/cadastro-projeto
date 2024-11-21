@@ -3,7 +3,7 @@ DROP TABLE [dbo].[Users]
 GO
 CREATE TABLE Users (
     UserID INT PRIMARY KEY IDENTITY(1,1),
-    Name VARCHAR(255) NOT NULL,
-    Email VARCHAR(255) NULL,
-    Password VARCHAR(255) NULL
+    Nome VARCHAR(255) NOT NULL,
+    Sobrenome VARCHAR(255) NULL,
+    Apelido VARCHAR(255) NULL
 );
